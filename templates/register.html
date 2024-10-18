@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Course Registration</h2>
+    <div class="card shadow border-0 bg-dark-blue text-white">
+        <div class="card-body">
+            <h5 class="card-title">Register for {{ course.name }}</h5>  <!-- Display the course name -->
+            <form method="POST" action="{{ url_for('register', course_id=course.id) }}">
+                <div class="mb-3">
+                    <label for="first_name" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="surname" class="form-label">Surname</label>
+                    <input type="text" class="form-control" id="surname" name="surname" required>
+                </div>
+                <div class="mb-3">
+                    <label for="other_names" class="form-label">Other Names</label>
+                    <input type="text" class="form-control" id="other_names" name="other_names">
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Personal Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" required>
+                </div>
+                <div class="mb-3">
+                    <label for="guardian_phone" class="form-label">Guardian's Phone Number</label>
+                    <input type="tel" class="form-control" id="guardian_phone" name="guardian_phone" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="amount_paid" class="form-label">Amount Paid (₦)</label>
+                    <input type="number" class="form-control" id="amount_paid" name="amount_paid" required>
+                </div>
+                <button type="submit" class="btn btn-success">Register</button>
+                <a href="{{ url_for('courses_list') }}" class="btn btn-secondary">Back to Courses</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-dark-blue {
+        background-color: #001F3F; /* Dark blue background */
+    }
+
+    .text-white {
+        color: white; /* Text color for better contrast */
+    }
+
+    .translucent-form {
+        background-color: rgba(0, 31, 63, 0.8); /* Dark blue background with 80% opacity */
+        border-radius: 5px; /* Optional: rounded corners */
+        padding: 20px; /* Optional: padding around the form */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: shadow for a lifted effect */
+    }
+</style>
+{% endblock %}

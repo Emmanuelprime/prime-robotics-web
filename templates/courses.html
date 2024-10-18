@@ -1,0 +1,68 @@
+\{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Available Courses</h2>
+    <div class="row">
+        {% for course in courses %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow border-0 hover-effect h-100 bg-dark-blue text-white"> <!-- Card with dark blue background -->
+                <img src="{{ url_for('static', filename='images/' ~ course.image) }}" class="card-img-top" alt="{{ course.name }}">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ course.name }}</h5>
+                    <p><strong>Duration:</strong> {{ course.duration }}</p>
+                    <p><strong>Cost:</strong> {{ course.cost }}</p>
+                    <div class="d-flex justify-content-between mt-auto"> <!-- Ensures buttons are at the bottom -->
+                        <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                        <a href="{{ url_for('register', course_id=course.id) }}" class="btn btn-success btn-sm">Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .hover-effect {
+        transition: transform 0.2s;
+    }
+
+    .hover-effect:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .card {
+        background-color: #001F3F; /* Dark blue background color */
+        height: 450px; /* Increased fixed height for all cards */
+    }
+
+    .card-img-top {
+        height: 200px; /* Adjusted fixed height for the images */
+        object-fit: cover; /* Ensure images cover the area without distortion */
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Distribute space evenly */
+        height: 250px; /* Increased fixed height for the card body */
+    }
+
+    .card-text {
+        flex-grow: 1; /* Allow text to take up available space */
+        overflow: hidden; /* Hide overflowing text */
+        text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+        white-space: normal; /* Allow text to wrap */
+    }
+
+    .bg-dark-blue {
+        background-color: #001F3F; /* Dark blue background */
+    }
+
+    .text-white {
+        color: white; /* Text color for better contrast */
+    }
+</style>
+{% endblock %}

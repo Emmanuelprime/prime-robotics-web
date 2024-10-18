@@ -1,0 +1,143 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container-fluid home-section text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Animated Heading -->
+            <div class="intro-text">
+                <h1 class="falling-heading display-3">Welcome to Prime Robotics</h1>
+                <p class="lead fade-in-paragraph mt-3">
+                    Your gateway to cutting-edge Robotics, Artificial Intelligence, and Data Science education.
+                </p>
+                <a href="{{ url_for('courses_list') }}" class="btn btn-primary btn-lg animated-btn mt-4">
+                    Explore Our Courses
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Decorative Divider -->
+<div class="divider text-center my-5 fade-in">
+    <i class="fas fa-robot fa-3x text-primary"></i>
+</div>
+
+<!-- Courses Overview Section -->
+<div class="courses-overview container fade-in">
+    <h2 class="text-center mb-4">Our Courses</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card course-card shadow-lg mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-cogs course-icon fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Robotics Development and Automation (RDA)</h3>
+                    <p class="card-text">Learn how to build robots and automate systems in this practical and hands-on course.</p>
+                    <a href="{{ url_for('course_detail', course_id=1) }}" class="btn btn-secondary">View Details</a>
+                    <a href="{{ url_for('register', course_id=1) }}" class="btn btn-primary mt-2">Register Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card course-card shadow-lg mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-brain course-icon fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Artificial Intelligence & Machine Learning (AIML)</h3>
+                    <p class="card-text">Master the fundamentals of AI and Machine Learning, and apply them to real-world problems.</p>
+                    <a href="{{ url_for('course_detail', course_id=2) }}" class="btn btn-secondary">View Details</a>
+                    <a href="{{ url_for('register', course_id=2) }}" class="btn btn-primary mt-2">Register Now</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card course-card shadow-lg mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line course-icon fa-3x mb-3 text-primary"></i>
+                    <h3 class="card-title">Data Science and Analytics (DSA)</h3>
+                    <p class="card-text">Analyze data, build models, and make data-driven decisions in the fast-growing field of Data Science.</p>
+                    <a href="{{ url_for('course_detail', course_id=3) }}" class="btn btn-secondary">View Details</a>
+                    <a href="{{ url_for('register', course_id=3) }}" class="btn btn-primary mt-2">Register Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call-to-Action Banner -->
+<div class="cta-section text-center my-5 fade-in">
+    <h2>Join the Future of Robotics and AI</h2>
+    <p>Enroll now and take the first step towards a career in tech innovation.</p>
+</div>
+
+<!-- Animation and Bootstrap Styles -->
+<style>
+    /* Heading Falling and Bouncing Animation */
+    .falling-heading {
+        position: relative;
+        animation: fallIn 2s ease-out forwards, bounce 0.6s 2s ease-out;
+        opacity: 0;
+    }
+
+    /* Falling from above with bounce effect */
+    @keyframes fallIn {
+        0% {
+            opacity: 0;
+            transform: translateY(-100vh);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Bouncing effect after falling */
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    /* Fade-in for paragraph and buttons */
+    .fade-in-paragraph, .animated-btn {
+        animation: fadeIn 2s ease-out forwards;
+    }
+
+    /* Fade-in for other elements */
+    .fade-in {
+        opacity: 0;
+        animation: fadeIn 2s ease-in-out forwards;
+    }
+
+    /* Keyframe for fade-in effect */
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    /* Adding margin and shadow effects to cards */
+    .course-card {
+        border: none;
+        border-radius: 10px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Decorative divider icon styling */
+    .divider i {
+        color: #007bff;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Registered Students</h2>
+    <div class="card shadow border-0 bg-dark-blue text-white">
+        <div class="card-body">
+            <table class="table table-striped table-hover text-white">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Surname</th>
+                        <th>Other Names</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Guardian's Phone</th>
+                        <th>Email</th>
+                        <th>Course</th>
+                        <th>Amount Paid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student[0] }}</td>  <!-- ID -->
+                        <td>{{ student[1] }}</td>  <!-- First Name -->
+                        <td>{{ student[2] }}</td>  <!-- Surname -->
+                        <td>{{ student[3] }}</td>  <!-- Other Names -->
+                        <td>{{ student[4] }}</td>  <!-- Phone -->
+                        <td>{{ student[5] }}</td>  <!-- Address -->
+                        <td>{{ student[6] }}</td>  <!-- Guardian's Phone -->
+                        <td>{{ student[7] }}</td>  <!-- Email -->
+                        <td>{{ student[8] }}</td>  <!-- Course -->
+                        <td>₦{{ student[9] }}</td>  <!-- Amount Paid -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Back to Home</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-dark-blue {
+        background-color: #001F3F; /* Dark blue background */
+    }
+
+    .text-white {
+        color: white; /* Text color for better contrast */
+    }
+
+    .table {
+        color: white; /* Text color for the table */
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(255, 255, 255, 0.1); /* Lighten odd rows */
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.2); /* Highlight row on hover */
+    }
+</style>
+{% endblock %}
