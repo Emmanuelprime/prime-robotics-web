@@ -47,6 +47,7 @@ courses = [
         'image': 'data.jpg'
     }
 ]
+
 def init_db():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -101,7 +102,7 @@ def course_detail(course_id):
 def register(course_id):
     if 'user_id' not in session:
         flash('You need to log in to register for a course.')
-        return redirect(url_for('login'))
+        return redirect(url_for('student_login'))
 
     course = next((course for course in courses if course['id'] == course_id), None)
     
@@ -126,14 +127,14 @@ def register(course_id):
 
     return render_template('register.html', course=course)
 
-# User registration route
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
+# Admin Signup route
+@app.route('/admin_signup', methods=['GET', 'POST'])
+def admin_signup():
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        role = request.form['role']  # Get user role (admin or student)
+        role = 'admin'  # Fixed role for admin
         hashed_password = generate_password_hash(password)
 
         conn = sqlite3.connect('database.db')
@@ -142,60 +143,100 @@ def signup():
             cursor.execute('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
                            (username, email, hashed_password, role))
             conn.commit()
-            flash('Account created successfully! Please log in.')
-            return redirect(url_for('login'))
+            flash('Admin account created successfully! Please log in.')
+            return redirect(url_for('admin_login'))
         except sqlite3.IntegrityError:
             flash('Username or email already exists.')
-            return redirect(url_for('signup'))
+            return redirect(url_for('admin_signup'))
         finally:
             conn.close()
 
-    return render_template('signup.html')
+    return render_template('admin_signup.html')
 
 
-# User login route
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+# Student Signup route
+@app.route('/student_signup', methods=['GET', 'POST'])
+def student_signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        role = 'student'  # Fixed role for student
+        hashed_password = generate_password_hash(password)
+
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        try:
+            cursor.execute('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
+                           (username, email, hashed_password, role))
+            conn.commit()
+            flash('Student account created successfully! Please log in.')
+            return redirect(url_for('student_login'))
+        except sqlite3.IntegrityError:
+            flash('Username or email already exists.')
+            return redirect(url_for('student_signup'))
+        finally:
+            conn.close()
+
+    return render_template('student_signup.html')
+
+
+# Admin login route
+@app.route('/admin_login', methods=['GET', 'POST'])
+def admin_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+        cursor.execute('SELECT * FROM users WHERE username = ? AND role = ?', (username, 'admin'))
         user = cursor.fetchone()
         conn.close()
 
         if user and check_password_hash(user[3], password):
             session['user_id'] = user[0]
             session['username'] = user[1]
-            session['role'] = user[4]  # Save the user role in session
+            session['role'] = user[4]
             flash('Logged in successfully!')
-
-            if user[4] == 'admin':
-                return redirect(url_for('admin'))
-            else:
-                return redirect(url_for('student_dashboard'))
+            return redirect(url_for('admin_dashboard'))
         else:
             flash('Invalid username or password. Please try again.')
 
-    return render_template('login.html')
+    return render_template('admin_login.html')
 
 
-# User logout route
-@app.route('/logout')
-def logout():
-    session.pop('user_id', None)
-    session.pop('username', None)
-    flash('You have been logged out.')
-    return redirect(url_for('index'))
+# Student login route
+@app.route('/student_login', methods=['GET', 'POST'])
+def student_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE username = ? AND role = ?', (username, 'student'))
+        user = cursor.fetchone()
+        conn.close()
+
+        if user and check_password_hash(user[3], password):
+            session['user_id'] = user[0]
+            session['username'] = user[1]
+            session['role'] = user[4]
+            flash('Logged in successfully!')
+            return redirect(url_for('student_dashboard'))
+        else:
+            flash('Invalid username or password. Please try again.')
+
+    return render_template('student_login.html')
+
 
 # Admin dashboard route (can view registered students)
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
+@app.route('/admin_dashboard', methods=['GET', 'POST'])
+def admin_dashboard():
     if 'user_id' not in session or session.get('role') != 'admin':
         flash('Unauthorized access. You need to be an admin to access this page.')
-        return redirect(url_for('login'))
+        return redirect(url_for('admin_login'))
 
     if request.method == 'POST':
         # Handle updating the amount paid
@@ -207,27 +248,32 @@ def admin():
         cursor.execute('UPDATE students SET amount_paid = ? WHERE id = ?', (amount_paid, student_id))
         conn.commit()
         conn.close()
-        flash('Amount paid updated successfully!')
+        flash('Payment updated successfully.')
 
-    # Fetch all students
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM students')
     students = cursor.fetchall()
     conn.close()
-    
-    return render_template('admin.html', students=students)
 
+    return render_template('admin_dashboard.html', students=students)
 
 # Student dashboard route
 @app.route('/student_dashboard')
 def student_dashboard():
     if 'user_id' not in session or session.get('role') != 'student':
         flash('Unauthorized access. You need to be a student to access this page.')
-        return redirect(url_for('login'))
-    
-    return render_template('courses.html')
+        return redirect(url_for('student_login'))
 
+    # Here you can fetch the student's registered course or any other personalized information.
+    return render_template('student_dashboard.html')
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('You have been logged out.')
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
