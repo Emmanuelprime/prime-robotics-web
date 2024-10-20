@@ -4,5 +4,61 @@
 <div class="container mt-5">
     <h1>Welcome, Admin</h1>
     <p>This is the admin dashboard where you can manage student registrations and payments.</p>
+
+    <h2 class="mt-4">Registered Students</h2>
+
+    <!-- Responsive Table Container -->
+    <div class="table-responsive bg-white p-3 rounded shadow-sm">
+        <table class="table table-hover table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Surname</th>
+                    <th>Other Names</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Guardian Phone</th>
+                    <th>Email</th>
+                    <th>Course</th>
+                    <th>Amount Paid (₦)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student[0] }}</td> <!-- Student ID -->
+                    <td>{{ student[1] }}</td> <!-- First Name -->
+                    <td>{{ student[2] }}</td> <!-- Surname -->
+                    <td>{{ student[3] }}</td> <!-- Other Names -->
+                    <td>{{ student[4] }}</td> <!-- Phone -->
+                    <td>{{ student[5] }}</td> <!-- Address -->
+                    <td>{{ student[6] }}</td> <!-- Guardian Phone -->
+                    <td>{{ student[7] }}</td> <!-- Email -->
+                    <td>{{ student[8] }}</td> <!-- Course -->
+                    <td>{{ student[9] }}</td> <!-- Amount Paid -->
+                    <td>
+                        <!-- Form to update the amount paid -->
+                        <form action="{{ url_for('admin_dashboard') }}" method="POST">
+                            <input type="hidden" name="student_id" value="{{ student[0] }}">
+                            <div class="input-group">
+                                <input type="number" name="amount_paid" class="form-control" placeholder="Amount Paid" value="{{ student[9] }}" step="0.01">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Logout Button at the Bottom -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    </div>
 </div>
 {% endblock %}

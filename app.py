@@ -68,14 +68,14 @@ def init_db():
         )
     ''')
 
-    # Create users table (for account management with roles)
+    # Create users table (for admin login)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
-            role TEXT NOT NULL  -- Added role for user type (admin/student)
+            role TEXT NOT NULL  -- Only admins
         )
     ''')
 
@@ -92,18 +92,31 @@ def index():
 def courses_list():
     return render_template('courses.html', courses=courses)
 
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
+
+        flash('Thank you for your message! We will get back to you soon.')
+
+        return redirect(url_for('contact')) 
+
+    return render_template('contact.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/course/<int:course_id>')
 def course_detail(course_id):
     course = next((course for course in courses if course['id'] == course_id), None)
     return render_template('course_detail.html', course=course)
 
-# Registration route for a specific course (requires login)
+# Registration route for a specific course (no login required)
 @app.route('/register/<int:course_id>', methods=['GET', 'POST'])
 def register(course_id):
-    if 'user_id' not in session:
-        flash('You need to log in to register for a course.')
-        return redirect(url_for('student_login'))
-
     course = next((course for course in courses if course['id'] == course_id), None)
     
     if request.method == 'POST':
@@ -123,14 +136,20 @@ def register(course_id):
         conn.commit()
         conn.close()
         flash('Registration successful!')
-        return redirect(url_for('index'))
+        return render_template('register.html', course=course)
 
     return render_template('register.html', course=course)
+
 
 # Admin Signup route
 @app.route('/admin_signup', methods=['GET', 'POST'])
 def admin_signup():
     if request.method == 'POST':
+        # Get current user's session info to verify they are an admin
+        if 'user_id' not in session or session.get('role') != 'admin':
+            flash('You must be logged in as an admin to create new admin accounts.')
+            return redirect(url_for('admin_login'))
+        
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
@@ -153,32 +172,6 @@ def admin_signup():
 
     return render_template('admin_signup.html')
 
-
-# Student Signup route
-@app.route('/student_signup', methods=['GET', 'POST'])
-def student_signup():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        role = 'student'  # Fixed role for student
-        hashed_password = generate_password_hash(password)
-
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
-        try:
-            cursor.execute('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
-                           (username, email, hashed_password, role))
-            conn.commit()
-            flash('Student account created successfully! Please log in.')
-            return redirect(url_for('student_login'))
-        except sqlite3.IntegrityError:
-            flash('Username or email already exists.')
-            return redirect(url_for('student_signup'))
-        finally:
-            conn.close()
-
-    return render_template('student_signup.html')
 
 
 # Admin login route
@@ -204,31 +197,6 @@ def admin_login():
             flash('Invalid username or password. Please try again.')
 
     return render_template('admin_login.html')
-
-
-# Student login route
-@app.route('/student_login', methods=['GET', 'POST'])
-def student_login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE username = ? AND role = ?', (username, 'student'))
-        user = cursor.fetchone()
-        conn.close()
-
-        if user and check_password_hash(user[3], password):
-            session['user_id'] = user[0]
-            session['username'] = user[1]
-            session['role'] = user[4]
-            flash('Logged in successfully!')
-            return redirect(url_for('student_dashboard'))
-        else:
-            flash('Invalid username or password. Please try again.')
-
-    return render_template('student_login.html')
 
 
 # Admin dashboard route (can view registered students)
@@ -257,16 +225,6 @@ def admin_dashboard():
     conn.close()
 
     return render_template('admin_dashboard.html', students=students)
-
-# Student dashboard route
-@app.route('/student_dashboard')
-def student_dashboard():
-    if 'user_id' not in session or session.get('role') != 'student':
-        flash('Unauthorized access. You need to be a student to access this page.')
-        return redirect(url_for('student_login'))
-
-    # Here you can fetch the student's registered course or any other personalized information.
-    return render_template('student_dashboard.html')
 
 
 @app.route('/logout')

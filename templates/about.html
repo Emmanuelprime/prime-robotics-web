@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">About Us</h2>
+    <div class="card shadow border-0 bg-light">
+        <div class="card-body">
+            <h5 class="card-title text-dark">Our Mission</h5>
+            <p class="card-text text-dark">
+                At Prime Robotics, our mission is to empower individuals through innovative education in robotics, artificial intelligence, and software development. We aim to create a community of learners who are equipped with the skills needed to thrive in the rapidly evolving tech landscape.
+            </p>
+            <h5 class="card-title text-dark">Our Vision</h5>
+            <p class="card-text text-dark">
+                We envision a future where technology is seamlessly integrated into everyday life, enhancing human capabilities and fostering creativity. We strive to be a leader in robotics education, providing top-notch training and resources for aspiring innovators.
+            </p>
+            <h5 class="card-title text-dark">Our Values</h5>
+            <ul class="list-group mb-3">
+                <li class="list-group-item">Innovation: We embrace creativity and encourage new ideas.</li>
+                <li class="list-group-item">Integrity: We conduct our operations with honesty and transparency.</li>
+                <li class="list-group-item">Excellence: We strive for the highest standards in education and service.</li>
+                <li class="list-group-item">Community: We believe in collaboration and support among our learners and staff.</li>
+            </ul>
+            <div class="text-center">
+                <a href="{{ url_for('courses_list') }}" class="btn btn-primary">Explore Our Courses</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-light {
+        background-color: #f8f9fa !important; /* Light background for the card */
+    }
+
+    .text-dark {
+        color: #343a40 !important; /* Dark text color for better visibility */
+    }
+
+    .card-title {
+        font-weight: bold; /* Making the title bold */
+    }
+
+    /* Optional: Adding a hover effect for buttons */
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darker blue for hover */
+        border-color: #0056b3; /* Darker blue border */
+    }
+</style>
+{% endblock %}

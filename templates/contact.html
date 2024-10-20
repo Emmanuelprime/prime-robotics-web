@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Contact Us</h2>
+    <div class="card shadow border-0 bg-light">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-4">We'd Love to Hear from You!</h5>
+            <form method="POST" action="{{ url_for('contact') }}">
+                <div class="mb-3">
+                    <label for="name" class="form-label text-dark">Your Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label text-dark">Your Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label text-dark">Your Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+                </div>
+            </form>
+            <div class="text-center mt-3">
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-light {
+        background-color: #f8f9fa !important; /* Light background for the card */
+    }
+
+    .btn-lg {
+        padding: 10px 20px; /* Adjusting button padding for a larger look */
+    }
+
+    .card-title {
+        font-weight: bold; /* Making the title bold */
+    }
+
+    /* Ensure the labels have a dark text color for visibility */
+    .form-label {
+        color: #343a40; /* Bootstrap's dark color */
+    }
+
+    /* Optional: Adding a hover effect for buttons */
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darker blue for hover */
+        border-color: #0056b3; /* Darker blue border */
+    }
+
+    .btn-secondary:hover {
+        background-color: #6c757d; /* Darker gray for hover */
+        border-color: #6c757d; /* Darker gray border */
+    }
+</style>
+{% endblock %}
